@@ -74,6 +74,8 @@ jobs:
 
           gh secret set MODYO_WIDGET_NAME_CATALOG --body "${slug}"
           gh secret set MODYO_WIDGET_NAME_DEMO --body "${slug}"
+
+          gh variable set CUSTOM_FOLDER --body "build"
         env:
           slug: ${{ env.slug }}
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
