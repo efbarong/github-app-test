@@ -7,17 +7,26 @@ jobs:
   configure:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Generate new github app token
         id: generate-token
         uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Set up teams
+        run: |
+          gh api \
+          -X PUT \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          /orgs/${{ env.DF_ORG }}/teams/${{ env.DF_TEAM }}/repos/${{ github.repository }} \
+          -f "permission=push"
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          DF_ORG: 'dynamic-framework'
+          DF_ADMINS: 'dynamic-framework-admins'
+          DF_TEAM: 'dynamic-framework-team'
 
       - name: Update repository topics 
         run: |
@@ -75,7 +84,7 @@ jobs:
           gh secret set MODYO_WIDGET_NAME_CATALOG --body "${slug}"
           gh secret set MODYO_WIDGET_NAME_DEMO --body "${slug}"
 
-          gh variable set CUSTOM_FOLDER --body "build"
+          gh variable set CUSTOM_FOLDER --body "docs"
         env:
           slug: ${{ env.slug }}
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
