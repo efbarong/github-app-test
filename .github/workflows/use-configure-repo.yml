@@ -24,7 +24,7 @@ jobs:
           -f "permission=push"
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-          DF_ORG: 'dynamic-framework'
+          DF_ORG: 'efbarong'
           DF_ADMINS: 'dynamic-framework-admins'
           DF_TEAM: 'dynamic-framework-team'
 
